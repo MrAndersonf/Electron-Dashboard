@@ -1,10 +1,13 @@
 {
   "name": "Electron-Dashboard",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "main.js",
   "repository": "https://github.com/MrAndersonf/Electron-Dashboard.git",
   "author": "Anderson Feitosa <andersonf-oliveira@live.com>",
   "license": "MIT",
+  "scripts": {
+    "start": "electron ."
+  },
   "dependencies": {
     "bootstrap": "^4.6.0",
     "dotenv": "^8.2.0",

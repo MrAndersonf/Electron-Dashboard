@@ -171,7 +171,7 @@
         </div>
         <div class="modal-body">
           <div>
-            <form>
+            <form class="needs-validation">
               <div class="input-group mt-1">
                 <div class="input-group-prepend">
                   <button class="input-group-text"
@@ -181,6 +181,19 @@
                 <input id="directory" type="text"
                   class="form-control"
                   placeholder="Origem"
+                  aria-label="Selecione a pasta"
+                  aria-describedby="btnGroupAddon">
+              </div>
+              <div class="input-group mt-1">
+                <div class="input-group-prepend">
+                  <div class="input-group-text">
+                    <span
+                      data-feather="arrow-right"></span>
+                  </div>
+                </div>
+                <input id="name" type="text"
+                  class="form-control"
+                  placeholder="Nome"
                   aria-label="Selecione a pasta"
                   aria-describedby="btnGroupAddon">
               </div>
@@ -198,37 +211,28 @@
                   placeholder="Executável" aria-label="Selecione
 										executável"
                   aria-describedby="btnGroupAddon">
-              </div>
-              <div class="input-group mt-1">
-                <div class="input-group-prepend">
-                  <div class="input-group-text">
-                    <span
-                      data-feather="arrow-right"></span>
-                  </div>
-                </div>
-                <input id="name" type="text"
-                  class="form-control"
-                  placeholder="Nome"
-                  aria-label="Selecione a pasta"
-                  aria-describedby="btnGroupAddon">
+                <div class="invalid-feedback"></div>
               </div>
             </form>
             <div class="form-group mt-1">
               <button type="button"
+                id="btnCancelUpload"
                 class="btn btn-sm btn-outline-danger"
                 data-dismiss="modal">
                 <span data-feather="trash"></span>
                 Cancelar
               </button>
               <button type="button"
+                id="btnUploadScript"
                 class="btn btn-sm btn-outline-primary"
-                onclick="event.preventDefault();sendFiles()">
+                onclick="event.preventDefault();uploadScriptToServer()">
                 <span data-feather="upload"></span>
                 Upload
               </button>
-              <button id="sincronize" type="button"
+              <button disabled id="btnInstallScript"
+                type="button"
                 class="btn btn-sm btn-outline-success"
-                onclick="event.preventDefault();sincronize()">
+                onclick="event.preventDefault();installScript()">
                 <span data-feather="refresh-cw"></span>
                 Instalar
               </button>
@@ -236,7 +240,8 @@
           </div>
         </div>
         <div class="modal-footer">
-
+          <div id="uploadFeedback"
+            style="color:green ;"></div>
         </div>
         <div class="btn-toolbar mb-2 mb-md-0">
         </div>
@@ -273,7 +278,7 @@
                     <th>Status</th>
                   </tr>
                 </thead>
-                <tbody id="loadingTableItems">
+                <tbody id="socketsToInstall">
                 </tbody>
               </table>
             </div>

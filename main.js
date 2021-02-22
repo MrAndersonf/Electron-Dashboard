@@ -1,6 +1,10 @@
 const { app, BrowserWindow, ipcMain, dialog } = require("electron");
 const path = require("path");
 
+if (process.platform === "win32") {
+  app.setAppUserModelId(app.name);
+}
+
 require("electron-reload")(__dirname, {
   electron: path.join(__dirname, "node_modules", ".bin", "electron"),
 });

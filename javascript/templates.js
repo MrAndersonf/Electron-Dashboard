@@ -37,9 +37,10 @@ module.exports = {
     <td><div><select id="script_${pid}">${script}</select></div></td>
     <td><div><input id="instances_${pid}" style="border: transparent;width: 45px" type="number" value="0" min="0" step="1"/></div></td>
     <td id="pid_status${pid}">Aguardando</td>
+    <td id="pid_process${pid}">----</td>
     <td>
         <div class="actionButtomsSection">
-            <button class="customBtnAction">${icon.trash()}</button>
+            <button class="customBtnAction" onclick="event.preventDefault();endProcess('${pid}')">${icon.trash()}</button>
             <button class="customBtnAction" onclick="event.preventDefault();activeScript('${pid}')">
                 ${icon.play()}
             </button>

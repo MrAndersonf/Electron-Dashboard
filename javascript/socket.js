@@ -26,9 +26,13 @@ let btnUploadScript = $("#btnUploadScript");
 let socketsToInstall = $("#socketsToInstall");
 let arrayInputs = [scriptToUploadPath, scriptName, scriptExecutable];
 
-let warningIcon = path.resolve(__dirname + "./icons/alert-circle.svg");
-let successIcon = path.resolve(__dirname + "/../icons/a.png");
+let warningIcon = path.resolve(__dirname + "/../alert-circle");
+let successIcon = path.resolve(__dirname + "/../icons/check-circle");
 let errorIcon = path.resolve(__dirname + "/../icons/x-circle.svg");
+
+$(window).on("load", () => {
+  notifyError("err", "lkjlj");
+});
 
 let sending = "";
 let recieving = "";
@@ -51,7 +55,13 @@ socket.on("connect", function () {
     $(`#pid_status${id}`).text("Baixando");
   });
 
+  socket.on("server-client-running-pid", ({ id, pid }) => {
+    console.log("fim da linha");
+    $(`#pid_process${id}`).text(pid);
+  });
+
   socket.on("server-decompress-on-client-started", (id) => {
+    console.log(id);
     $(`#pid_statuss${id}`).text("extraindo");
   });
 
@@ -59,15 +69,22 @@ socket.on("connect", function () {
     $(`#pid_status${id}`).text("node install");
   });
 
+  socket.on("server-cloning-on-client-started", (id) => {
+    $(`#pid_status${id}`).text("Clonando");
+  });
+
   socket.on("server-successfuly-installed-on-client", (clients) => {
     templates.connectedSockets(activeSocketsList, clients);
     $(`#pid_status${clients.id}`).text("finalizado");
   });
 
+  socket.on("server-running-script-response", ({ id, message }) => {
+    $(`#pid_status${id}`).text(message);
+  });
+
   socket.on("server-error-on-client", ({ id, error }) => {
-    console.log(id);
-    console.log(erro);
-    $(`#pid_status${id}`).text(`${error}`);
+    $(`#pid_status${id}`).text(`Erro`);
+    notifyError("Erro", error);
   });
 
   socket.on("server-script-completely-downloaded", () => {
@@ -88,7 +105,7 @@ function notifySuccess(title, msg) {
   let notification = new Notification(title, {
     body: msg,
     icon: successIcon,
-    timeoutType: "default",
+    timeoutType: "never",
   });
 }
 
@@ -139,7 +156,7 @@ function uploadScriptToServer() {
       stream.on("end", function () {
         clearInterval(sending);
         sending = "";
-        notifySuccess("Sucesso!", `Script ${scriptName.val()} enviado.`);
+        recieving = template.Recieving(uploadFeedback);
       });
       stream.on("error", function (error) {
         notify(
@@ -160,7 +177,12 @@ function sendLink() {
   let link = $("#linkRepo").val();
   let provider = $("#Repoprovider").val();
   socket.emit("link", { url: link, service: provider });
+  $("#linkScripts").modal("hide");
 }
+
+$("#linkScripts").on("hidden.bs.modal", () => {
+  $("#linkRepo").val("");
+});
 
 function installScript() {
   scriptUpload.modal("hide");
@@ -221,5 +243,13 @@ function activeScript(pid) {
     socket: pid,
     instances: instancesScript,
     script: selectedScript,
+  });
+}
+
+function endProcess(id) {
+  let processId = $(`#pid_process${id}`).text();
+  socket.emit("administrator-demands-end-process", {
+    pid: processId,
+    clientz: id,
   });
 }
